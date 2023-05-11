@@ -1,27 +1,45 @@
 <app-header-view></app-header-view>
-<div class="container pt-3">
-    <form class="example-form" (ngSubmit)="addOrder()">
-          <h4>Beräkna utdrag</h4>
-          <mat-form-field appearance="fill" class="example-full-width">
-            <mat-label>Skriv in effekten</mat-label>
-            <input matInput type="number" name="effect" [(ngModel)]="effect" placeholder="0">
-          </mat-form-field>
+<div class="row">
+  <div class="col-5">
+    <div class="container pt-3" style="border-right: 2px solid purple;">
+      <form [formGroup]="countForm" class="example-form" (ngSubmit)="addOrder()">
+        <h4>Beräkna utdrag</h4>
+        <mat-form-field appearance="fill" class="example-full-width">
+          <mat-label>Effekten</mat-label>
+          <input matInput type="number" formControlName="effect" placeholder="0">
+        </mat-form-field>
 
-          <mat-form-field appearance="fill" class="example-full-width">
-            <mat-label>Skriv in spänningen</mat-label>
-            <input matInput type="number" name="voltage" [(ngModel)]="voltage" placeholder="0">
-          </mat-form-field>
+        <mat-form-field appearance="fill" class="example-full-width">
+          <mat-label>Spänningen</mat-label>
+          <input matInput type="number" formControlName="voltage" placeholder="0">
+        </mat-form-field>
 
-          <mat-form-field appearance="fill" class="example-full-width">
-            <mat-label>Skriv in rörlängden</mat-label>
-            <input matInput type="number" name="pipeLength" [(ngModel)]="pipeLength" placeholder="0">
-          </mat-form-field>
-          
-          <div style="justify-content: end; display: flex;">
-           <button mat-raised-button>Beräkna</button>
-          </div>
-    </form>
+        <mat-form-field appearance="fill" class="example-full-width">
+          <mat-label>Uppvärmda längden</mat-label>
+          <input matInput type="number" formControlName="heatedLength" placeholder="0">
+        </mat-form-field>
+
+        <div style="justify-content: end; display: flex;">
+          <button mat-raised-button>Beräkna</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-7">
+    <div class="row">
+      <div style="border: 1px solid black;" *ngFor="let data of okResultat.slice(0,4)" class="col">
+        <p>Utdrag (mellan 2-4): {{data.u}}</p>
+        <p>Lindningsmotstånd: {{data.resistance}}</p>
+        <p>Tråddiameter: {{data.wireDiameter}}</p>
+        <p>Dorndiameter: {{data.dornDiameter}}</p>
+        <p>Varv: {{data.numberOfLaps}} x 2</p>
+        <p>Utdragen längd: {{data.pipeLength}} x 2</p>
+        <p>Ytbelastning: {{data.surfacePressure}}</p>
+      </div>
+    </div>
+  </div>
 </div>
+
 
 
 <!-- <div style="border-bottom: solid 2px purple;">
@@ -36,11 +54,7 @@
     <button type="submit">Spara</button>
   </form>
 </div> -->
-<div class="row">
-  <div style="border: 1px solid black;" *ngFor="let data of sortedList.slice(0, 4)" class="col">
-    {{ data }}
-  </div>
-</div>
+
 
 <!-- /*DET HÄR ÄR FÖR USERS I FRAMTIDEN*/
 <div style="border-bottom: solid 2px black">

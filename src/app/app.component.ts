@@ -1,21 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Observable, empty } from 'rxjs';
+import { ResultData } from './classes/result-data';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'manufacturing-program';
+  countForm = new FormGroup({
+    effect: new FormControl(),
+    voltage: new FormControl(),
+    heatedLength: new FormControl()
+   });
+
   userData$!: Observable<any>;
   effect!: number;
   voltage!: number;
-  pipeLength!: number;
+  heatedLength!: number;
+  numberOfLaps!: number;
   utdragResultat!: number;
-  okResultat: Array<number> = [];
-  sortedList: Array<number> = [];
+  okResultat: Array<ResultData> = [];
+  sortedList: Array<ResultData> = [];
 
   wireArray = [
     {diameter: 0.200, ohm: 42.97},
@@ -45,24 +54,46 @@ export class AppComponent {
     this.getData();
   }
 
+  ngOnInit(): void {
+    this.countForm.controls.effect.setValue(this.effect);
+    this.countForm.controls.voltage.setValue(this.voltage);
+    this.countForm.controls.heatedLength.setValue(this.heatedLength);
+  }
+
   addOrder() {
+    this.effect = this.countForm.controls.effect.value;
+    this.voltage = this.countForm.controls.voltage.value;
+    this.heatedLength = this.countForm.controls.heatedLength.value;
+    //det jag har nu funkar på samma sätt som detta nedanför, går inte att skriva flera gånger
+    //this.effect = this.countForm.value.effect;
+    // this.voltage = this.countForm.value.voltage;
+    // this.heatedLength = this.countForm.value.heatedLength;
+    console.log("effect ", this.effect);
+    console.log("voltage ", this.voltage);
+    console.log("heatedLength ", this.heatedLength);
+
+    const pipeLength = (this.heatedLength *2) -120;
     const resistance = Math.pow(this.voltage,2) / (this.effect);
+
     for (let index = 0; index < this.dornArray.length; index++) {
-      this.wireArray.forEach(wirediameter => {
-        const lapLength = (wirediameter.diameter + this.dornArray[index]) * Math.PI;
-        const lWire = resistance / wirediameter.ohm;
-        const numberOfLaps = (lWire * 1000) / lapLength;
-        const lTät = (wirediameter.diameter) * numberOfLaps;
-        this.utdragResultat =  (this.pipeLength / lTät);
+      this.wireArray.forEach(wire => {
+        const lapLength = (wire.diameter + this.dornArray[index]) * Math.PI;
+        const lWire = resistance / wire.ohm;
+        this.numberOfLaps = (lWire * 1000) / lapLength;
+        const lTät = (wire.diameter) * this.numberOfLaps;
+        this.utdragResultat =  (pipeLength / lTät);
+
         if(this.utdragResultat > 2.9 && this.utdragResultat < 3.2){
-          this.okResultat.push(this.utdragResultat);
+        const surfacePressure = this.effect / 10 / wire.diameter / Math.PI / lWire;
+          const rounded = Math.round(this.numberOfLaps /2);
+          const okObjects = new ResultData(Math.round(resistance * 100)/100, rounded, wire.diameter, this.dornArray[index], this.utdragResultat, surfacePressure, pipeLength/2);
+          this.okResultat.push(okObjects);
           return;
         }
       });
     }
-    //(a,b) => b-a) sorterar för att visa de från 3.0 högst upp och minsta längst ner
-    this.sortedList = this.okResultat.sort((a,b) => Math.abs(a-3)-Math.abs(b-3)); /* visar den som är närmast 3.0 */
-    console.log(this.sortedList);
+    //this.sortedList = this.okResultat.sort((a,b) => Math.abs(a-3)-Math.abs(b-3)); /* visar den som är närmast 3.0 */
+    this.sortedList = this.okResultat.sort((a, b) => a.surfacePressure - b.surfacePressure);
   }
 
   addData(form:any) {
