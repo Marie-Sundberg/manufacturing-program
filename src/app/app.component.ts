@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, empty } from 'rxjs';
@@ -9,7 +9,7 @@ import { ResultData } from './classes/result-data';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'manufacturing-program';
   countForm = new FormGroup({
     effect: new FormControl(),
@@ -54,23 +54,11 @@ export class AppComponent implements OnInit {
     this.getData();
   }
 
-  ngOnInit(): void {
-    this.countForm.controls.effect.setValue(this.effect);
-    this.countForm.controls.voltage.setValue(this.voltage);
-    this.countForm.controls.heatedLength.setValue(this.heatedLength);
-  }
-
   addOrder() {
-    this.effect = this.countForm.controls.effect.value;
-    this.voltage = this.countForm.controls.voltage.value;
-    this.heatedLength = this.countForm.controls.heatedLength.value;
-    //det jag har nu funkar på samma sätt som detta nedanför, går inte att skriva flera gånger
-    //this.effect = this.countForm.value.effect;
-    // this.voltage = this.countForm.value.voltage;
-    // this.heatedLength = this.countForm.value.heatedLength;
-    console.log("effect ", this.effect);
-    console.log("voltage ", this.voltage);
-    console.log("heatedLength ", this.heatedLength);
+    this.okResultat = [];
+    this.effect = this.countForm.value.effect;
+    this.voltage = this.countForm.value.voltage;
+    this.heatedLength = this.countForm.value.heatedLength;
 
     const pipeLength = (this.heatedLength *2) -120;
     const resistance = Math.pow(this.voltage,2) / (this.effect);
@@ -82,11 +70,10 @@ export class AppComponent implements OnInit {
         this.numberOfLaps = (lWire * 1000) / lapLength;
         const lTät = (wire.diameter) * this.numberOfLaps;
         this.utdragResultat =  (pipeLength / lTät);
-
-        if(this.utdragResultat > 2.9 && this.utdragResultat < 3.2){
         const surfacePressure = this.effect / 10 / wire.diameter / Math.PI / lWire;
+        if(this.utdragResultat > 2.9 && this.utdragResultat < 3.2 && surfacePressure < 15){
           const rounded = Math.round(this.numberOfLaps /2);
-          const okObjects = new ResultData(Math.round(resistance * 100)/100, rounded, wire.diameter, this.dornArray[index], this.utdragResultat, surfacePressure, pipeLength/2);
+          const okObjects = new ResultData(Math.round(resistance * 100)/100, rounded, wire.diameter, this.dornArray[index], this.utdragResultat, Math.round(surfacePressure * 100)/100, pipeLength/2);
           this.okResultat.push(okObjects);
           return;
         }

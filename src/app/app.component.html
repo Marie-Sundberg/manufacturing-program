@@ -1,7 +1,7 @@
 <app-header-view></app-header-view>
 <div class="row">
-  <div class="col-5">
-    <div class="container pt-3" style="border-right: 2px solid purple;">
+  <div class="col-md-5 col-sm-12">
+    <div class="container pt-3">
       <form [formGroup]="countForm" class="example-form" (ngSubmit)="addOrder()">
         <h4>Beräkna utdrag</h4>
         <mat-form-field appearance="fill" class="example-full-width">
@@ -19,16 +19,16 @@
           <input matInput type="number" formControlName="heatedLength" placeholder="0">
         </mat-form-field>
 
-        <div style="justify-content: end; display: flex;">
+        <div class="button-position">
           <button mat-raised-button>Beräkna</button>
         </div>
       </form>
     </div>
   </div>
-  <div class="col-7">
-    <div class="row">
-      <div style="border: 1px solid black;" *ngFor="let data of okResultat.slice(0,4)" class="col">
-        <p>Utdrag (mellan 2-4): {{data.u}}</p>
+  <div class="col-md-7 col-sm-12">
+    <div class="row center">
+      <div *ngFor="let data of okResultat.slice(0,6)" class="col card-border">
+        <p><b>Utdrag (mellan 2-4):</b> {{data.u}}</p>
         <p>Lindningsmotstånd: {{data.resistance}}</p>
         <p>Tråddiameter: {{data.wireDiameter}}</p>
         <p>Dorndiameter: {{data.dornDiameter}}</p>
