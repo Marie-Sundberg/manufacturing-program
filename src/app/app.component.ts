@@ -25,6 +25,8 @@ export class AppComponent {
   utdragResultat!: number;
   okResultat: Array<ResultData> = [];
   sortedList: Array<ResultData> = [];
+  yCoupled: boolean = false;
+  showText: boolean = false;
 
   wireArray = [
     {diameter: 0.200, ohm: 42.97},
@@ -71,13 +73,24 @@ export class AppComponent {
         const lTät = (wire.diameter) * this.numberOfLaps;
         this.utdragResultat =  (pipeLength / lTät);
         const surfacePressure = this.effect / 10 / wire.diameter / Math.PI / lWire;
+        const surfacePressureCartridge = this.effect / (pipeLength/10 * 3.77);
         if(this.utdragResultat > 2.9 && this.utdragResultat < 3.2 && surfacePressure < 15){
           const rounded = Math.round(this.numberOfLaps /2);
-          const okObjects = new ResultData(Math.round(resistance * 100)/100, rounded, wire.diameter, this.dornArray[index], this.utdragResultat, Math.round(surfacePressure * 100)/100, pipeLength/2);
+          const okObjects = new ResultData(Math.round(resistance * 100)/100, rounded, wire.diameter, this.dornArray[index], Math.round(this.utdragResultat*100)/100, Math.round(surfacePressure * 100)/100, pipeLength/2, Math.round(surfacePressureCartridge * 100)/100);
           this.okResultat.push(okObjects);
+          this.showText = true;
           return;
         }
+
       });
+    }
+    switch (this.voltage) {
+      case 230:
+        this.yCoupled = true;
+        break;
+      case 400: 
+        this.yCoupled = false
+      break;
     }
     //this.sortedList = this.okResultat.sort((a,b) => Math.abs(a-3)-Math.abs(b-3)); /* visar den som är närmast 3.0 */
     this.sortedList = this.okResultat.sort((a, b) => a.surfacePressure - b.surfacePressure);
