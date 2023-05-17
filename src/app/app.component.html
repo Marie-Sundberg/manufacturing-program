@@ -7,7 +7,7 @@
         class="example-form"
         (ngSubmit)="addOrder()"
       >
-        <h1 style="text-align: center">Beräkna utdrag</h1>
+        <h1 class="text-center">Beräkna utdrag</h1>
         <mat-form-field appearance="fill" class="example-full-width">
           <mat-label>Effekten</mat-label>
           <input
@@ -38,7 +38,7 @@
           />
         </mat-form-field>
 
-        <div class="button-position">
+        <div class="justify-content-end d-flex">
           <button mat-raised-button>Beräkna</button>
         </div>
       </form>
@@ -50,18 +50,18 @@
       <div *ngIf="showText" class="text-center pt-3">
         <h2>Tillverkningsdata</h2>
       </div>
-      <div *ngFor="let data of okResultat.slice(0, 6)" class="col card-border">
-        <p style="border-bottom: 1px solid black; font-weight: bold">
-          Utdrag (mellan 2-4): {{ data.u }}
+      <div *ngFor="let data of okResults.slice(0, 6)" class="col card-border">
+        <p class="border-u">
+          Utdrag (mellan 2-4): {{ data.u }} mm
         </p>
-        <p><b>Lindningsmotstånd: </b> {{ data.resistance }}</p>
-        <p><b>Tråddiameter: </b> {{ data.wireDiameter }}</p>
-        <p><b>Dorndiameter: </b> {{ data.dornDiameter }}</p>
+        <p><b>Lindningsmotstånd: </b> {{ data.rLind }} ({{data.lowerLimit}}-{{data.upperLimit}}) ohm</p>
+        <p><b>Tråddiameter: </b> {{ data.wireDiameter }} mm</p>
+        <p><b>Dorndiameter: </b> {{ data.dornDiameter }} mm</p>
         <p><b>Varv: </b> {{ data.numberOfLaps }} x 2</p>
-        <p><b>Utdragen längd: </b>{{ data.pipeLength }} x 2</p>
-        <p><b>Ytbelastning: </b>{{ data.surfacePressure }}</p>
-        <div class="text-center" style="border-top: 1px solid black; padding: 0; margin: 0">
-          <i>~ Ytbelastning Patron: {{ data.surfacePressureCartridge }} ~</i>
+        <p><b>Utdragen längd: </b>{{ data.lK }} x 2 mm</p>
+        <p><b>Ytbelastning: </b>{{ data.surfacePressure }} W/cm²</p>
+        <div class="text-center good-to-know-text">
+          <i>~ Ytbelastning Patron: {{ data.surfacePressureCartridge }} W/cm² ~</i>
           <p *ngIf="!yCoupled"><i>~ Patronen D-kopplas ~</i></p>
           <p *ngIf="yCoupled"><i>~ Patronen Y-kopplas ~</i></p>
         </div>
@@ -69,39 +69,3 @@
     </div>
   </div>
 </div>
-
-<!-- <div style="border-bottom: solid 2px purple;">
-  <h3>FYLL I ORDER</h3>
-  <form (ngSubmit)="addOrder()">
-    <input type="number" name="effect" [(ngModel)]="effect" placeholder="Effekt">
-    <br>
-    <input type="number" name="voltage" [(ngModel)]="voltage" placeholder="Spänning">
-    <br>
-    <input type="number" name="pipeLength" [(ngModel)]="pipeLength" placeholder="Rörlängd">
-    <br>
-    <button type="submit">Spara</button>
-  </form>
-</div> -->
-
-<!-- /*DET HÄR ÄR FÖR USERS I FRAMTIDEN*/
-<div style="border-bottom: solid 2px black">
-  <h3>LÄGG TILL USER</h3>
-  <form #form="ngForm" (ngSubmit)="addData(form)">
-    <input type="text" name="name" ngModel />
-    <br />
-    <input type="password" name="password" ngModel />
-    <br />
-    <button type="submit">Spara</button>
-  </form>
-</div>
-<div style="border-bottom: solid 2px green;">
-  <h3>ALLA USERS</h3>
-  <ul>
-    <li *ngFor="let data of userData$ | async">
-      {{ data.name }} /
-      {{ data.password }}
-      <button (click)="updateData(data.id)">Ändra</button>
-      <button (click)="deleteData(data.id)">Ta bort</button>
-    </li>
-  </ul>
-</div> -->
