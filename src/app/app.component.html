@@ -62,8 +62,8 @@
         <p><b>Ytbelastning: </b>{{ data.surfacePressure }} W/cm²</p>
         <div class="text-center good-to-know-text">
           <i>~ Ytbelastning Patron: {{ data.surfacePressureCartridge }} W/cm² ~</i>
-          <p *ngIf="!yCoupled"><i>~ Patronen D-kopplas ~</i></p>
-          <p *ngIf="yCoupled"><i>~ Patronen Y-kopplas ~</i></p>
+          <p *ngIf="!deltaConnection"><i>~ Patronen Y-kopplas ~</i></p>
+          <p *ngIf="deltaConnection"><i>~ Patronen D-kopplas ~</i></p>
         </div>
       </div>
     </div>
